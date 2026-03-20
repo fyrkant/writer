@@ -28,10 +28,18 @@ export default function App() {
     setTimeout(() => setToastVisible(false), 3000)
   }, [])
 
-  const triggerBuild = useCallback(() => {
+  const triggerBuild = useCallback(async () => {
+    if (!token) return
     setBuildStatus('building')
-    setTimeout(() => setBuildStatus('triggered'), 3000)
-  }, [])
+    try {
+      await apiFetch('/api/build', token, { method: 'POST' })
+      setBuildStatus('triggered')
+      showToast('Build triggered', 'success')
+    } catch {
+      setBuildStatus('idle')
+      showToast('Build trigger failed', 'error')
+    }
+  }, [token, showToast])
 
   const loadPosts = useCallback(async (tok: string) => {
     setLoading(true)
@@ -97,13 +105,12 @@ export default function App() {
         setIsNew(false)
       }
       setDirty(false)
-      triggerBuild()
-      showToast('Saved — build triggered', 'success')
+      showToast('Saved', 'success')
     } catch (e) {
       showToast('Save failed', 'error')
       throw e
     }
-  }, [token, currentId, triggerBuild, showToast])
+  }, [token, currentId, showToast])
 
   const handleDelete = useCallback(async (): Promise<void> => {
     if (!token || !currentId) return
@@ -113,13 +120,12 @@ export default function App() {
       setCurrentId(null)
       setIsNew(false)
       setDirty(false)
-      triggerBuild()
-      showToast('Deleted — build triggered', 'success')
+      showToast('Deleted', 'success')
     } catch (e) {
       showToast('Delete failed', 'error')
       throw e
     }
-  }, [token, currentId, triggerBuild, showToast])
+  }, [token, currentId, showToast])
 
   const buildDot = buildStatus === 'building' ? 'saving' : buildStatus === 'triggered' ? 'saved' : ''
   const buildLabel = buildStatus === 'building' ? 'building…' : buildStatus === 'triggered' ? 'build triggered' : 'idle'
@@ -140,6 +146,13 @@ export default function App() {
               <span className={`status-dot ${buildDot}`}></span>
               <span>{buildLabel}</span>
             </span>
+            <button
+              className="btn btn-primary"
+              onClick={triggerBuild}
+              disabled={buildStatus === 'building'}
+            >
+              build
+            </button>
             <button className="btn btn-ghost" onClick={handleLogout}>logout</button>
           </div>
         </div>

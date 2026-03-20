@@ -92,7 +92,6 @@ app.post("/api/posts", requireAuth, async (c) => {
   };
 
   await c.env.POSTS.put(`post:${id}`, JSON.stringify(post));
-  await triggerBuild(c.env);
 
   return c.json(post, 201);
 });
@@ -121,7 +120,6 @@ app.put("/api/posts/:id", requireAuth, async (c) => {
   };
 
   await c.env.POSTS.put(`post:${id}`, JSON.stringify(post));
-  await triggerBuild(c.env);
 
   return c.json(post);
 });
@@ -136,8 +134,13 @@ app.delete("/api/posts/:id", requireAuth, async (c) => {
   }
 
   await c.env.POSTS.delete(`post:${id}`);
-  await triggerBuild(c.env);
 
+  return c.json({ ok: true });
+});
+
+// Trigger build manually (auth required)
+app.post("/api/build", requireAuth, async (c) => {
+  await triggerBuild(c.env);
   return c.json({ ok: true });
 });
 
