@@ -1,15 +1,27 @@
 import { useState } from 'react'
+import { apiFetch } from '../api'
 
 interface Props {
   onLogin: (token: string) => void
-  error: boolean
 }
 
-export default function Login({ onLogin, error }: Props) {
+export default function Login({ onLogin }: Props) {
   const [password, setPassword] = useState('')
+  const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const submit = () => {
-    if (password) onLogin(password)
+  const submit = async () => {
+    if (!password || loading) return
+    setLoading(true)
+    setError(false)
+    try {
+      await apiFetch('/api/auth', password)
+      onLogin(password)
+    } catch {
+      setError(true)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -29,8 +41,8 @@ export default function Login({ onLogin, error }: Props) {
           />
         </label>
         <div style={{ marginTop: '16px' }}>
-          <button className="btn btn-primary" style={{ width: '100%' }} onClick={submit}>
-            Enter
+          <button className="btn btn-primary" style={{ width: '100%' }} onClick={submit} disabled={loading}>
+            {loading ? 'Checking...' : 'Enter'}
           </button>
         </div>
         {error && (

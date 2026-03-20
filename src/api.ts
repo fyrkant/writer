@@ -7,6 +7,7 @@ export async function apiFetch<T>(path: string, token: string | null, opts: Requ
       ...(opts.headers as Record<string, string> ?? {}),
     },
   })
+  console.log('API response', res.status, res.statusText)
   if (!res.ok) throw new Error(`${res.status}`)
   return res.json() as Promise<T>
 }

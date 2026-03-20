@@ -20,7 +20,6 @@ export default function App() {
   const [toast, setToast] = useState<ToastInfo>({ msg: '', type: 'success' })
   const [toastVisible, setToastVisible] = useState(false)
   const [buildStatus, setBuildStatus] = useState<BuildStatus>('idle')
-  const [loginError, setLoginError] = useState(false)
 
   const showToast = useCallback((msg: string, type: 'success' | 'error') => {
     setToast({ msg, type })
@@ -48,7 +47,6 @@ export default function App() {
       setPosts(data)
     } catch (e) {
       if ((e as Error).message === '401') {
-        setLoginError(true)
         setToken(null)
         localStorage.removeItem('blog_token')
       } else {
@@ -66,7 +64,6 @@ export default function App() {
   const handleLogin = useCallback((tok: string) => {
     localStorage.setItem('blog_token', tok)
     setToken(tok)
-    setLoginError(false)
   }, [])
 
   const handleLogout = useCallback(() => {
@@ -133,7 +130,7 @@ export default function App() {
   const editorKey = currentId ?? (isNew ? 'new' : 'empty')
 
   if (!token) {
-    return <Login onLogin={handleLogin} error={loginError} />
+    return <Login onLogin={handleLogin} />
   }
 
   return (

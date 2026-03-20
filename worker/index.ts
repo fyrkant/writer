@@ -15,6 +15,12 @@ type PostInput = Omit<Post, 'id' | 'createdAt' | 'updatedAt'>;
 
 const app = new Hono<{ Bindings: Env }>();
 
+// Global error handler
+app.onError((err, c) => {
+  console.error('[ERROR]', err.message, err.stack);
+  return c.json({ error: err.message }, 500);
+});
+
 // Auth middleware for write operations
 const requireAuth = async (c: Context<{ Bindings: Env }>, next: () => Promise<void>) => {
   const auth = c.req.header('Authorization');
@@ -43,6 +49,11 @@ async function triggerBuild(env: Env) {
 function generateId(): string {
   return crypto.randomUUID();
 }
+
+// Verify auth token
+app.get("/api/auth", requireAuth, async (c) => {
+  return c.json({ ok: true });
+});
 
 // Get all posts
 app.get("/api/posts", async (c) => {
@@ -76,9 +87,12 @@ app.get("/api/posts/:id", async (c) => {
 
 // Create post (auth required)
 app.post("/api/posts", requireAuth, async (c) => {
+  console.log('[POST /api/posts] Start');
   const input = await c.req.json<PostInput>();
+  console.log('[POST /api/posts] Input:', JSON.stringify(input));
   const now = new Date().toISOString();
   const id = generateId();
+  console.log('[POST /api/posts] Generated id:', id);
 
   const post: Post = {
     id,
@@ -92,14 +106,18 @@ app.post("/api/posts", requireAuth, async (c) => {
   };
 
   await c.env.POSTS.put(`post:${id}`, JSON.stringify(post));
+  console.log('[POST /api/posts] Saved, returning');
 
   return c.json(post, 201);
 });
 
 // Update post (auth required)
 app.put("/api/posts/:id", requireAuth, async (c) => {
+  console.log('[PUT /api/posts/:id] Start');
   const id = c.req.param('id');
+  console.log('[PUT /api/posts/:id] id:', id);
   const existing = await c.env.POSTS.get(`post:${id}`);
+  console.log('[PUT /api/posts/:id] existing:', existing ? 'found' : 'not found');
 
   if (!existing) {
     return c.json({ error: 'Not found' }, 404);
@@ -120,6 +138,7 @@ app.put("/api/posts/:id", requireAuth, async (c) => {
   };
 
   await c.env.POSTS.put(`post:${id}`, JSON.stringify(post));
+  console.log('[PUT /api/posts/:id] Saved, returning');
 
   return c.json(post);
 });
