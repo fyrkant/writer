@@ -23,8 +23,8 @@ This is a Cloudflare Workers app with a React frontend, built using Vite with th
 - Compiled with `tsconfig.app.json`
 
 **Worker (`worker/`):**
-- Cloudflare Worker handling API routes
-- Entry: `worker/index.ts` exports `ExportedHandler<Env>`
+- Cloudflare Worker handling API routes using [Hono](https://hono.dev/)
+- Entry: `worker/index.ts` exports a Hono app (`new Hono<{ Bindings: Env }>()`)
 - Routes starting with `/api/` are handled by the worker
 - Other routes fall through to the SPA (configured in `wrangler.jsonc` via `not_found_handling: "single-page-application"`)
 - Compiled with `tsconfig.worker.json`
