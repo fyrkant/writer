@@ -15,21 +15,31 @@ npm run cf-typegen # Generate Cloudflare types (wrangler types)
 
 ## Architecture
 
-This is a Cloudflare Workers app with a React frontend, built using Vite with the `@cloudflare/vite-plugin`.
+Blog editor app with React frontend and Hono API backend on Cloudflare Workers.
 
 **Frontend (`src/`):**
 - React 19 + TypeScript
 - Entry: `src/main.tsx` → `src/App.tsx`
-- Compiled with `tsconfig.app.json`
+- Components: `Login`, `Sidebar`, `Editor`, `Toast`
+- Types: `src/types.ts` (Post, PostInput)
+- API client: `src/api.ts`
 
-**Worker (`worker/`):**
-- Cloudflare Worker handling API routes using [Hono](https://hono.dev/)
-- Entry: `worker/index.ts` exports a Hono app (`new Hono<{ Bindings: Env }>()`)
-- Routes starting with `/api/` are handled by the worker
-- Other routes fall through to the SPA (configured in `wrangler.jsonc` via `not_found_handling: "single-page-application"`)
-- Compiled with `tsconfig.worker.json`
-- Types generated via `npm run cf-typegen` → `worker-configuration.d.ts`
+**Worker (`worker/index.ts`):**
+- Hono app with REST API for posts
+- KV storage via `POSTS` namespace
+- Bearer token auth for write operations
+
+**API Endpoints:**
+- `GET /api/posts` - list all posts (public)
+- `GET /api/posts/:id` - get single post (public)
+- `POST /api/posts` - create post (auth required)
+- `PUT /api/posts/:id` - update post (auth required)
+- `DELETE /api/posts/:id` - delete post (auth required)
 
 **Configuration:**
-- `wrangler.jsonc` - Cloudflare Workers config
+- `wrangler.jsonc` - Workers config, KV binding, vars
 - `vite.config.ts` - Vite + React + Cloudflare plugin
+
+**Secrets (set via `wrangler secret put`):**
+- `AUTH_TOKEN` - Bearer token for authentication
+- `NETLIFY_BUILD_HOOK` - Webhook URL to trigger builds on save
