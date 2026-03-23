@@ -9,7 +9,10 @@
 		"lint": "biome check .",
 		"preview": "npm run build && vite preview",
 		"deploy": "npm run build && wrangler deploy",
-		"cf-typegen": "wrangler types"
+		"cf-typegen": "wrangler types",
+		"test": "playwright test",
+		"test:ui": "playwright test --ui",
+		"test:debug": "playwright test --debug"
 	},
 	"dependencies": {
 		"hono": "^4.12.8",
@@ -19,6 +22,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "^2.4.8",
 		"@cloudflare/vite-plugin": "^1.30.0",
+		"@playwright/test": "^1.58.2",
 		"@types/node": "^24.12.0",
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
