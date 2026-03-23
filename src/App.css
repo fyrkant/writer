@@ -46,8 +46,6 @@ body {
   letter-spacing: -0.02em;
 }
 
-.login-box h1 span { color: var(--accent); }
-
 /* ── APP SHELL ── */
 #app { display: none; height: 100vh; flex-direction: column; }
 #app.visible { display: flex; }
@@ -63,8 +61,6 @@ body {
 }
 
 .topbar-title { font-weight: 600; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; }
-.topbar-title span { color: var(--accent); }
-
 .topbar-actions { display: flex; gap: 8px; align-items: center; }
 
 /* ── LAYOUT ── */
@@ -91,7 +87,9 @@ body {
   justify-content: space-between;
 }
 
+.topbar-title span { color: var(--accent); }
 .sidebar-header span { color: var(--muted); font-size: 12px; }
+.login-box h1 span { color: var(--accent); }
 
 .posts-list {
   flex: 1;

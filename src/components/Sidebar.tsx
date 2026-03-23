@@ -13,7 +13,7 @@ export default function Sidebar({ posts, loading, currentId, onSelect, onNew }: 
     <div className="sidebar">
       <div className="sidebar-header">
         <span>{posts.length} post{posts.length !== 1 ? 's' : ''}</span>
-        <button className="btn btn-primary" onClick={onNew}>+ New</button>
+        <button type="button" className="btn btn-primary" onClick={onNew}>+ New</button>
       </div>
       <div className="posts-list">
         {loading ? (
@@ -26,7 +26,8 @@ export default function Sidebar({ posts, loading, currentId, onSelect, onNew }: 
           </div>
         ) : (
           posts.map(post => (
-            <div
+            <button
+              type="button"
               key={post.id}
               className={`post-item${post.id === currentId ? ' active' : ''}`}
               onClick={() => onSelect(post.id)}
@@ -38,7 +39,7 @@ export default function Sidebar({ posts, loading, currentId, onSelect, onNew }: 
                   <span key={t} className="tag-pill">{t}</span>
                 ))}
               </div>
-            </div>
+            </button>
           ))
         )}
       </div>

@@ -34,6 +34,7 @@ export default function Login({ onLogin }: Props) {
             type="password"
             placeholder="••••••••••••"
             autoComplete="current-password"
+            // biome-ignore lint/a11y/noAutofocus: intentional UX
             autoFocus
             value={password}
             onChange={e => setPassword(e.target.value)}
@@ -41,7 +42,7 @@ export default function Login({ onLogin }: Props) {
           />
         </label>
         <div style={{ marginTop: '16px' }}>
-          <button className="btn btn-primary" style={{ width: '100%' }} onClick={submit} disabled={loading}>
+          <button type="button" className="btn btn-primary" style={{ width: '100%' }} onClick={submit} disabled={loading}>
             {loading ? 'Checking...' : 'Enter'}
           </button>
         </div>

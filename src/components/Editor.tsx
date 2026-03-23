@@ -93,6 +93,7 @@ export default function Editor({ post, isNew, onSave, onDelete, onDirty }: Props
               type="text"
               className="title-input"
               placeholder="Post title…"
+              // biome-ignore lint/a11y/noAutofocus: intentional UX
               autoFocus={isNew}
               value={title}
               onChange={e => change(setTitle)(e.target.value)}
@@ -134,7 +135,7 @@ export default function Editor({ post, isNew, onSave, onDelete, onDirty }: Props
         />
         <div className="editor-footer">
           <div className="editor-footer-left">
-            <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
+            <button type="button" className="btn btn-primary" onClick={handleSave} disabled={saving}>
               Save
             </button>
             <div className="status">
@@ -143,7 +144,7 @@ export default function Editor({ post, isNew, onSave, onDelete, onDirty }: Props
             </div>
           </div>
           {post && (
-            <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
+            <button type="button" className="btn btn-danger" onClick={handleDelete}>Delete</button>
           )}
         </div>
       </div>

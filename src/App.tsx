@@ -144,13 +144,14 @@ export default function App() {
               <span>{buildLabel}</span>
             </span>
             <button
+              type="button"
               className="btn btn-primary"
               onClick={triggerBuild}
               disabled={buildStatus === 'building'}
             >
               build
             </button>
-            <button className="btn btn-ghost" onClick={handleLogout}>logout</button>
+            <button type="button" className="btn btn-ghost" onClick={handleLogout}>logout</button>
           </div>
         </div>
         <div className="main">
