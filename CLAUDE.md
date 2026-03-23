@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run dev       # Start dev server with HMR (React frontend + Cloudflare Worker)
 npm run build     # TypeScript compile + Vite build
-npm run lint      # ESLint
+npm run lint      # Biome
 npm run preview   # Build and preview production locally
 npm run deploy    # Build and deploy to Cloudflare Workers
 npm run cf-typegen # Generate Cloudflare types (wrangler types)

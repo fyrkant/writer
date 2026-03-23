@@ -1,4 +1,4 @@
-import { Hono, type Context } from "hono";
+import { type Context, Hono } from "hono";
 
 interface Post {
   id: string;
