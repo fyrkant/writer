@@ -1,73 +1,71 @@
-# React + TypeScript + Vite
+# blog.editor
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A minimal blog post editor backed by Cloudflare Workers and KV storage. React frontend with a Hono REST API — write and manage posts, trigger Netlify builds on save.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend** — React 19 + TypeScript, built with Vite
+- **Backend** — Hono on Cloudflare Workers
+- **Storage** — Cloudflare KV
+- **Auth** — Bearer token (single shared secret)
+- **Linting** — Biome
+- **Tests** — Playwright e2e
 
-## React Compiler
+## Getting started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npx playwright install chromium  # first time only
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open [http://localhost:5173](http://localhost:5173). Enter your `AUTH_TOKEN` to log in.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Commands
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Command | Description |
+|---|---|
+| `npm run dev` | Start dev server (frontend + worker via miniflare) |
+| `npm run build` | TypeScript compile + Vite build |
+| `npm run lint` | Biome lint |
+| `npm run preview` | Build and preview locally |
+| `npm run deploy` | Build and deploy to Cloudflare Workers |
+| `npm test` | Run Playwright e2e tests |
+| `npm run test:ui` | Playwright interactive UI mode |
+
+## API
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| GET | `/api/auth` | required | Verify token |
+| GET | `/api/posts` | — | List all posts |
+| GET | `/api/posts/:id` | — | Get single post |
+| POST | `/api/posts` | required | Create post |
+| PUT | `/api/posts/:id` | required | Update post |
+| DELETE | `/api/posts/:id` | required | Delete post |
+| POST | `/api/build` | required | Trigger Netlify build |
+
+## Secrets
+
+Set via `wrangler secret put`:
+
+- `AUTH_TOKEN` — password used to log in
+- `NETLIFY_BUILD_HOOK` — webhook URL triggered on save (optional)
+
+## Deployment
+
+```bash
+npm run deploy
 ```
+
+Requires a Cloudflare account with a KV namespace. Update the `id` in `wrangler.jsonc` with your own namespace ID.
+
+## Tests
+
+Playwright e2e tests cover all user flows. API calls are intercepted with `page.route()` so tests run without real KV or credentials.
+
+```bash
+npm test
+```
+
+CI runs on every push and pull request via GitHub Actions.
