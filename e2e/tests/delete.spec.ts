@@ -51,7 +51,7 @@ test.describe('Delete post', () => {
   test('confirming delete clears the editor', async ({ page }) => {
     page.once('dialog', dialog => dialog.accept())
     await page.locator('button.btn-danger').click()
-    await expect(page.locator('.empty-state')).toContainText('select a post or create a new one')
+    await expect(page.locator('.editor-pane .empty-state')).toContainText('select a post or create a new one')
   })
 
   test('successful delete shows "Deleted" success toast', async ({ page }) => {

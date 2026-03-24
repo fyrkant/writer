@@ -10,7 +10,7 @@ test.describe('Editor — empty state', () => {
   })
 
   test('shows placeholder when no post is selected', async ({ page }) => {
-    await expect(page.locator('.empty-state')).toContainText('select a post or create a new one')
+    await expect(page.locator('.editor-pane .empty-state')).toContainText('select a post or create a new one')
   })
 })
 
