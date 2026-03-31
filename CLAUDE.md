@@ -11,7 +11,39 @@ npm run lint      # Biome
 npm run preview   # Build and preview production locally
 npm run deploy    # Build and deploy to Cloudflare Workers
 npm run cf-typegen # Generate Cloudflare types (wrangler types)
+npm test          # Run Playwright e2e tests
+npm run test:ui   # Run tests with interactive Playwright UI
+npm run test:debug # Run tests in debug mode
 ```
+
+## Testing
+
+**Always run `npm test` to validate changes before committing.**
+
+E2e tests live in `e2e/` and use Playwright with `page.route()` to mock all API calls — no real KV or auth token needed.
+
+```
+e2e/
+  fixtures/
+    api.ts    # makePost() factory + setupApiRoutes(page, opts) for mocking endpoints
+    auth.ts   # loginAs(page) — injects token into localStorage before navigation
+  tests/
+    login.spec.ts        # Auth flow, error state, token persistence
+    sidebar.spec.ts      # Post list, counts, tags, active highlight, loading
+    editor.spec.ts       # All fields, new/existing post, Ctrl+S, save states
+    delete.spec.ts       # Confirmation dialog, cancel, success/error
+    dirty.spec.ts        # Unsaved-changes guard on post switch and new post
+    toast.spec.ts        # Success/error toasts, auto-hide
+    auth-persist.spec.ts # Reload persistence, logout, 401 clears token
+    build.spec.ts        # Build button, status transitions, error handling
+```
+
+First-time setup (installs Chromium browser):
+```bash
+npx playwright install chromium
+```
+
+CI runs automatically on push/PR via `.github/workflows/e2e.yml`.
 
 ## Architecture
 
