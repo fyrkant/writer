@@ -7,6 +7,7 @@ interface Props {
   onSave: (data: PostInput) => Promise<void>
   onDelete: () => Promise<void>
   onDirty: () => void
+  onBack: () => void
 }
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved' | 'error'
@@ -18,7 +19,7 @@ const saveStatusLabel: Record<SaveStatus, string> = {
   error: 'error saving',
 }
 
-export default function Editor({ post, isNew, onSave, onDelete, onDirty }: Props) {
+export default function Editor({ post, isNew, onSave, onDelete, onDirty, onBack }: Props) {
   const [title, setTitle] = useState(post?.title ?? '')
   const [date, setDate] = useState(post?.date ?? (isNew ? new Date().toISOString().split('T')[0] : ''))
   const [layout, setLayout] = useState(post?.layout ?? 'post')
@@ -85,6 +86,9 @@ export default function Editor({ post, isNew, onSave, onDelete, onDirty }: Props
 
   return (
     <div className="editor-pane">
+      <div className="mobile-back">
+        <button type="button" className="btn btn-ghost" onClick={onBack}>← Posts</button>
+      </div>
       <div className="editor-content" style={{ display: 'flex' }}>
         <div className="meta-bar">
           <label>

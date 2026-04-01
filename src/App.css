@@ -47,7 +47,7 @@ body {
 }
 
 /* ── APP SHELL ── */
-#app { display: none; height: 100vh; flex-direction: column; }
+#app { display: none; height: 100vh; height: 100dvh; flex-direction: column; }
 #app.visible { display: flex; }
 
 .topbar {
@@ -300,6 +300,49 @@ select option { background: var(--surface); }
 #toast.show { opacity: 1; transform: translateY(0); }
 #toast.success { border-color: var(--accent); color: var(--accent); }
 #toast.error { border-color: var(--danger); color: var(--danger); }
+
+/* ── MOBILE BACK BUTTON ── */
+.mobile-back { display: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  /* Login */
+  .login-box {
+    width: calc(100% - 32px);
+    padding: 28px 20px;
+  }
+
+  /* Topbar */
+  .topbar { padding: 10px 14px; }
+  .topbar-title { font-size: 12px; }
+  .status span:last-child { display: none; } /* hide label, keep dot */
+
+  /* Layout: show sidebar OR editor, not both */
+  .sidebar {
+    width: 100%;
+    border-right: none;
+  }
+  .main.has-post .sidebar { display: none; }
+  .main:not(.has-post) .editor-pane { display: none; }
+
+  /* Mobile back button */
+  .mobile-back {
+    display: flex;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  /* Meta bar: stack to single column */
+  .meta-bar {
+    grid-template-columns: 1fr;
+    padding: 12px 14px;
+    gap: 10px;
+  }
+  .meta-bar-row2 { padding: 10px 14px; }
+  .editor-footer { padding: 10px 14px; }
+  .markdown-editor { padding: 14px; }
+}
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 4px; }
