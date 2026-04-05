@@ -128,6 +128,13 @@ export default function App() {
   const buildLabel = buildStatus === 'building' ? 'building…' : buildStatus === 'triggered' ? 'build triggered' : 'idle'
   const currentPost = posts.find(p => p.id === currentId) ?? null
   const editorKey = currentId ?? (isNew ? 'new' : 'empty')
+  const editorActive = currentId !== null || isNew
+
+  const handleBack = useCallback(() => {
+    setCurrentId(null)
+    setIsNew(false)
+    setDirty(false)
+  }, [])
 
   if (!token) {
     return <Login onLogin={handleLogin} />
@@ -154,7 +161,7 @@ export default function App() {
             <button type="button" className="btn btn-ghost" onClick={handleLogout}>logout</button>
           </div>
         </div>
-        <div className="main">
+        <div className={`main${editorActive ? ' has-post' : ''}`}>
           <Sidebar
             posts={posts}
             loading={loading}
@@ -169,6 +176,7 @@ export default function App() {
             onSave={handleSave}
             onDelete={handleDelete}
             onDirty={() => setDirty(true)}
+            onBack={handleBack}
           />
         </div>
       </div>
